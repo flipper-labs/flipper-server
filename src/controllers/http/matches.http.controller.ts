@@ -13,6 +13,18 @@ import { Match } from "./../../models/match/index.js";
 import { getIntegerQueryParam } from "./utils.js";
 import { paginate } from "./../../utils/pagination.js";
 import { MatchFilter, NFTNumberFilterParsed } from "models/match/filters.js";
+import { UUID } from "crypto";
+
+const getMatch = (req: Request, res: Response) => {
+  const matchId = req.params["matchId"];
+  if (!matchId) {
+    res.status(400).json({});
+    return;
+  }
+
+  const match = InMemoryData.getInstance().getMatch(matchId as UUID);
+  res.status(200).json(match);
+};
 
 const getMatches = (req: Request, res: Response) => {
   const filters = req.body as MatchFilter;
@@ -34,15 +46,12 @@ const getMatches = (req: Request, res: Response) => {
       if (s.checked) return s.value;
     })
     .filter((s) => s !== undefined);
-  console.log("Status filter", statusFilters);
 
   if (statusFilters.length > 0) {
     activeMatches = activeMatches.filter((match) =>
       statusFilters.includes(match.status)
     );
   }
-
-  console.log("After status", activeMatches);
 
   // nft number filter
   const nftNumberFilter: (NFTNumberFilterParsed | undefined)[] =
@@ -151,4 +160,5 @@ const getLimitAndPage = (req: Request) => {
 export const matchesHttpController = {
   getLensFollowingsMatches,
   getMatches,
+  getMatch,
 };
