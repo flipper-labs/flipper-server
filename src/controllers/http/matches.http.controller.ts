@@ -20,11 +20,13 @@ const getMatches = (req: Request, res: Response) => {
   let activeMatches = InMemoryData.getInstance().getAllActiveMatches();
 
   // address filter
-  activeMatches = activeMatches.filter(
-    (match) =>
-      match.player1.wallet === filters.player ||
-      match.player2.wallet === filters.player
-  );
+  if (filters.player !== "") {
+    activeMatches = activeMatches.filter(
+      (match) =>
+        match.player1.wallet === filters.player ||
+        match.player2.wallet === filters.player
+    );
+  }
 
   // status filter
   const statusFilters = filters.status
@@ -34,7 +36,7 @@ const getMatches = (req: Request, res: Response) => {
     .filter((s) => s !== undefined);
   console.log("Status filter", statusFilters);
 
-  if (activeMatches.length > 0) {
+  if (statusFilters.length > 0) {
     activeMatches = activeMatches.filter((match) =>
       statusFilters.includes(match.status)
     );
