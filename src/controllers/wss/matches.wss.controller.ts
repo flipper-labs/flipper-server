@@ -46,10 +46,6 @@ export const registerMatchHandler = (socket: Socket) => {
   socket.on(MatchEvent.Abandon, (payload: AbandonMatchPayload) =>
     abandonMatch(socket, payload)
   );
-  
-  socket.on(MatchEvent.ActiveMatches, (reason: string) =>
-    activeMatches(socket, reason)
-  );
 };
 
 const createMatch = function (socket: Socket, payload: CreateMatchPayload) {
@@ -202,9 +198,4 @@ const abandonMatch = function (socket: Socket, payload: AbandonMatchPayload) {
   match.completeMatchUponAbandonment(payload.abandoned);
   InMemoryData.getInstance().updateMatch(match);
   SocketNotifier.getInstance().matchCompleted(match);
-};
-
-const activeMatches = function (socket: Socket, payload: any) {
-  const matches = InMemoryData.getInstance().getAllActiveMatches();
-  socket.emit(MatchEvent.ActiveMatches, matches)
 };

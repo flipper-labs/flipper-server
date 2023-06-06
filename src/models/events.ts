@@ -6,7 +6,6 @@ export enum GeneralEvent {
 
 export enum MatchEvent {
   Create = "match:create",
-  ActiveMatches = "match:all_active",
   Join = "match:join",
   Spectate = "match:spectate",
   Chat = "match:chat",

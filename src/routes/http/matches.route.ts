@@ -9,3 +9,5 @@ matchesRouter.get(
   async (req: Request, res: Response) =>
     await matchesHttpController.getLensFollowingsMatches(req, res)
 );
+
+matchesRouter.post("/", matchesHttpController.getMatches);

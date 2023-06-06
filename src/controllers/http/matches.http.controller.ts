@@ -12,6 +12,71 @@ import { followingQuery } from "./../../services/lens/queries/followings.query.j
 import { Match } from "./../../models/match/index.js";
 import { getIntegerQueryParam } from "./utils.js";
 import { paginate } from "./../../utils/pagination.js";
+import { MatchFilter, NFTNumberFilterParsed } from "models/match/filters.js";
+
+const getMatches = (req: Request, res: Response) => {
+  const filters = req.body as MatchFilter;
+
+  let activeMatches = InMemoryData.getInstance().getAllActiveMatches();
+
+  // address filter
+  activeMatches = activeMatches.filter(
+    (match) =>
+      match.player1.wallet === filters.player ||
+      match.player2.wallet === filters.player
+  );
+
+  // status filter
+  const statusFilters = filters.status
+    .map((s) => {
+      if (s.checked) return s.value;
+    })
+    .filter((s) => s !== undefined);
+  console.log("Status filter", statusFilters);
+
+  if (activeMatches.length > 0) {
+    activeMatches = activeMatches.filter((match) =>
+      statusFilters.includes(match.status)
+    );
+  }
+
+  console.log("After status", activeMatches);
+
+  // nft number filter
+  const nftNumberFilter: (NFTNumberFilterParsed | undefined)[] =
+    filters.nftNumber
+      .map((nn) => {
+        if (!nn.checked) return;
+
+        const splitted = nn.value.split("-");
+        return {
+          lower: parseInt(splitted[0]),
+          upper: parseInt(splitted[1]),
+        };
+      })
+      .filter((nn) => nn !== undefined);
+
+  if (nftNumberFilter.length > 0) {
+    activeMatches = activeMatches
+      .filter((match) => {
+        const player1Num = match.player1.nfts ? match.player1.nfts.length : 0;
+        const player2Num = match.player2.nfts ? match.player2.nfts.length : 0;
+        const total: number = player1Num + player2Num;
+
+        for (let i = 0; i < nftNumberFilter.length; i++) {
+          const filter = nftNumberFilter[i] as NFTNumberFilterParsed;
+          if (filter.upper >= total && filter.lower <= total) {
+            return match;
+          }
+        }
+
+        return undefined;
+      })
+      .filter((m) => m !== undefined);
+  }
+
+  res.status(200).json(paginate(activeMatches, getLimitAndPage(req)));
+};
 
 const getLensFollowingsMatches = async (req: Request, res: Response) => {
   const address = req.params.address;
@@ -59,6 +124,10 @@ const getLensFollowingsMatches = async (req: Request, res: Response) => {
     matches = InMemoryData.getInstance().getAllMatches();
   }
 
+  res.status(200).json(paginate(matches, getLimitAndPage(req)));
+};
+
+const getLimitAndPage = (req: Request) => {
   // Default limit and page
   let limit: number = 10,
     page: number = 1;
@@ -74,9 +143,10 @@ const getLensFollowingsMatches = async (req: Request, res: Response) => {
     // console.debug("Error parsing limit or page");
   }
 
-  res.status(200).json(paginate(matches, { limit, page }));
+  return { limit, page };
 };
 
 export const matchesHttpController = {
   getLensFollowingsMatches,
+  getMatches,
 };
