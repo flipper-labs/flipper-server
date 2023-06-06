@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "esnext",
+    "baseUrl": "./",
+    "rootDir": "./src",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    // only recompile changed code - this sometimes causes an error
+    // when there's no code that's changed in dist folder or when
+    // there's no dist folder at all
+    "incremental": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"],
+  "compileOnSave": true
+}
