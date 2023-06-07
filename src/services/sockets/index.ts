@@ -13,6 +13,8 @@ import {
   ChatPayload,
 } from "./../../models/match/matches.payloads.js";
 import { ReconnectPayload } from "models/sockets/sockets.payloads.js";
+import { Player } from "models/models.js";
+import { match } from "assert";
 
 /** SocketNotifier emits appropriate events to connected clients. */
 export class SocketNotifier {
@@ -102,6 +104,20 @@ export class SocketNotifier {
   matchStarted(match: Match) {
     console.log(`[matchStarted] The match ${match.id} has been started`);
     this.io.emit(MatchEvent.Start, match);
+  }
+
+  moveToRoll(matchID: UUID) {
+    this.io.to(matchID).emit(MatchEvent.MoveToRoll, { matchID: matchID });
+  }
+
+  stake(matchID: UUID, player: Player) {
+    console.log("Player " + player.wallet + " has locked his NFTs");
+    this.io
+      .to(matchID)
+      .emit(MatchEvent.Stake, {
+        matchID: matchID,
+        playerWallet: player.wallet,
+      });
   }
 
   matchCompleted(match: Match) {

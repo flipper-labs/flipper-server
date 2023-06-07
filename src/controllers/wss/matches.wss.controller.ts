@@ -14,6 +14,8 @@ import {
   ChatPayload,
   BargainPayload,
 } from "./../../models/match/matches.payloads.js";
+import { UUID } from "crypto";
+import { Player } from "models/models.js";
 
 export const registerMatchHandler = (socket: Socket) => {
   socket.on(MatchEvent.Create, (payload: CreateMatchPayload) =>
@@ -37,6 +39,14 @@ export const registerMatchHandler = (socket: Socket) => {
 
   socket.on(MatchEvent.Bargain, (payload: BargainPayload) =>
     matchBargain(socket, payload)
+  );
+
+  socket.on(MatchEvent.MoveToRoll, (payload: { matchID: UUID }) =>
+    moveToRoll(socket, payload)
+  );
+
+  socket.on(MatchEvent.Stake, (payload: { matchID: UUID; player: Player }) =>
+    stake(socket, payload)
   );
 
   socket.on(MatchEvent.Complete, (payload: CompleteMatchPayload) =>
@@ -124,6 +134,17 @@ const matchBargain = function (socket: Socket, payload: BargainPayload) {
 
   InMemoryData.getInstance().updateMatch(match);
   SocketNotifier.getInstance().bargainUpdated(match, payload);
+};
+
+const moveToRoll = function (socket: Socket, payload: { matchID: UUID }) {
+  SocketNotifier.getInstance().moveToRoll(payload.matchID);
+};
+
+const stake = function (
+  socket: Socket,
+  payload: { matchID: UUID; player: Player }
+) {
+  SocketNotifier.getInstance().stake(payload.matchID, payload.player);
 };
 
 const spectateMatch = function (socket: Socket, payload: SpectateMatchPayload) {
