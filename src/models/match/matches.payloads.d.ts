@@ -28,7 +28,7 @@ export interface ChatPayload {
 export interface BargainPayload {
   matchID: UUID;
   player: Player;
-  isLockedIn: boolean;
+  locked: boolean;
 }
 
 export interface CompleteMatchPayload {

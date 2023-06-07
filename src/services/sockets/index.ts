@@ -92,11 +92,7 @@ export class SocketNotifier {
     console.log(
       `[bargainUpdated] Player ${payload.player.wallet} has updated their bargain`
     );
-    this.io.to(payload.matchID).emit(MatchEvent.Bargain, {
-      match: match,
-      player: payload.player,
-      isLockedIn: payload.isLockedIn,
-    });
+    this.io.to(payload.matchID).emit(MatchEvent.Bargain, payload);
   }
 
   matchStarted(match: Match) {
