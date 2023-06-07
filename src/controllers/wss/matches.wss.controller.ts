@@ -27,8 +27,7 @@ export const registerMatchHandler = (socket: Socket) => {
   );
 
   socket.on(MatchEvent.Start, (payload: StartMatchPayload) =>
-    // startMatch(socket, payload)
-    console.log("TODO")
+    startMatch(socket, payload)
   );
 
   socket.on(MatchEvent.Spectate, (payload: SpectateMatchPayload) =>
@@ -170,14 +169,14 @@ const spectateMatch = function (socket: Socket, payload: SpectateMatchPayload) {
 const startMatch = function (socket: Socket, payload: StartMatchPayload) {
   const match = InMemoryData.getInstance().getMatch(payload.matchID);
 
-  if (!match) {
-    console.log(`[startMatch] Match with ID ${payload.matchID} does not exist`);
-    return;
-  }
-  if (match.isCompleted()) {
-    console.log(`[startMatch] Match ${match.id} is already completed`);
-    return;
-  }
+  // if (!match) {
+  //   console.log(`[startMatch] Match with ID ${payload.matchID} does not exist`);
+  //   return;
+  // }
+  // if (match.isCompleted()) {
+  //   console.log(`[startMatch] Match ${match.id} is already completed`);
+  //   return;
+  // }
 
   // TODO: Contract interaction lgoic
 
