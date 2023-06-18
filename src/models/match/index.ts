@@ -18,12 +18,13 @@ export class Match {
     this.player1 = payload.creator;
     this.player2 = { wallet: "", nfts: [] };
     this.gamemode = payload.gamemode;
-    this.status = MatchStatus.Created;
+    this.status = MatchStatus.Open;
     this.outcome = MatchOutcome.None;
   }
 
   joinMatch(opponent: Player) {
     this.player2 = opponent;
+    this.status = MatchStatus.Live;
   }
 
   completeMatch(winnerWallet: string) {

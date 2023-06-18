@@ -83,7 +83,7 @@ export class SocketNotifier {
     console.log(
       `[matchSpectatorJoined] Spectator has joined the match ${matchID}`
     );
-    this.io.to(matchID).emit(MatchEvent.Spectate);
+    this.io.to(matchID).emit(MatchEvent.Spectate, { matchID: matchID });
   }
 
   chatMessageSent(payload: ChatPayload) {
@@ -112,12 +112,10 @@ export class SocketNotifier {
 
   stake(matchID: UUID, player: Player) {
     console.log("Player " + player.wallet + " has locked his NFTs");
-    this.io
-      .to(matchID)
-      .emit(MatchEvent.Stake, {
-        matchID: matchID,
-        playerWallet: player.wallet,
-      });
+    this.io.to(matchID).emit(MatchEvent.Stake, {
+      matchID: matchID,
+      playerWallet: player.wallet,
+    });
   }
 
   matchCompleted(match: Match) {

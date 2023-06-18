@@ -6,12 +6,12 @@ export enum GameMode {
 }
 
 export enum MatchStatus {
-  /** `Created` - the match has just been created, the creator is waiting for an opponent. */
-  Created = "Created",
-  /** `Ongoing` - the match is currently happening, no outcome yet. */
-  Ongoing = "Ongoing",
+  /** `Open` - the match has just been created, the creator is waiting for an opponent. */
+  Open = "OPEN",
+  /** `Live` - the match is currently happening, no outcome yet. */
+  Live = "LIVE",
   /** `Completed` - the match has finished. */
-  Completed = "Completed",
+  Completed = "COMPLETED",
 }
 
 export enum MatchOutcome {
